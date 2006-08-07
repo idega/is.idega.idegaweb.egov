@@ -1,0 +1,15 @@
+<document>
+  <properties>
+    <title>eGov Base changes</title>
+    <author email="laddi@idega.com">Thorhallur "Laddi" Helgason</author>
+  </properties>
+  <body>
+  
+   <release version="1.0.1" date="2006-08-07">
+      <action dev="laddi" type="update">
+        Declaring new version of block.
+      </action>
+    </release>
+
+  </body>
+</document>
