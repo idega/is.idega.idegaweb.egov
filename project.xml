@@ -5,18 +5,21 @@
   <pomVersion>3</pomVersion>
   <name>eGov Base Bundle</name>
   <artifactId>is.idega.idegaweb.egov</artifactId>
-  <currentVersion>1.0.1</currentVersion>
+  <currentVersion>1.0.2</currentVersion>
   <inceptionYear>2006</inceptionYear>
   <shortDescription>eGov Base Bundle</shortDescription>
-
   <versions>
     <version>
       <id>1.0.1</id>
       <name>1.0.1</name>
       <tag>EGOV_BASE_1_0_1</tag>
     </version>
+    <version>
+      <id>1.0.2</id>
+      <name>1.0.2</name>
+      <tag>EGOV_BASE_1_0_2</tag>
+    </version>
   </versions>
-
   <branches/>
   <developers>
     <developer>
@@ -59,7 +62,6 @@
       </properties>
     </dependency>
   </dependencies>
-
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
@@ -70,5 +72,4 @@
     </unitTest>
   </build>
   <properties/>
-
 </project>
