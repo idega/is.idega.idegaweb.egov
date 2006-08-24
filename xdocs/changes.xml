@@ -5,6 +5,12 @@
   </properties>
   <body>
   
+     <release version="1.0.2" date="2006-08-24">
+      <action dev="tryggvil" type="fix">
+      		Fixed small NullPointerException in AccountingBusinessManager
+      </action>
+    </release>
+  
    <release version="1.0.1" date="2006-08-07">
       <action dev="laddi" type="update">
         Declaring new version of block.

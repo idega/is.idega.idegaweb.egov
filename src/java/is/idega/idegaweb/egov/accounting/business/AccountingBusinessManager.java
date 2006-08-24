@@ -39,7 +39,11 @@ public class AccountingBusinessManager {
 	
 	
 	public AccountingBusiness getAccountingBusinessOrDefault(CaseCode caseCode, IWApplicationContext iwac) throws IBOLookupException {
-		Class businessClass = getBusinessClass(caseCode);
+		
+		Class businessClass =null;
+		if(caseCode!=null){
+			businessClass=getBusinessClass(caseCode);
+		}
 		if (businessClass == null) {
 			businessClass = AccountingBusiness.class;
 		}
