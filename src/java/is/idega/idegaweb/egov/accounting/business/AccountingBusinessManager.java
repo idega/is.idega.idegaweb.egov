@@ -52,9 +52,13 @@ public class AccountingBusinessManager {
 	
 	
 	public AccountingBusiness getAccountingBusiness(CaseCode caseCode, IWApplicationContext iwac) throws IBOLookupException {
+		return getAccountingBusiness(caseCode.getCode(), iwac);
+	}
+
+	public AccountingBusiness getAccountingBusiness(String caseCode, IWApplicationContext iwac) throws IBOLookupException {
 		Class businessClass = getBusinessClass(caseCode);
 		if (businessClass == null) {
-			throw new  IBOLookupException("[CaseCodeManager]: An entry for case code "+ caseCode.getCode() +" could not be found");
+			throw new  IBOLookupException("[CaseCodeManager]: An entry for case code "+ caseCode +" could not be found");
 		}
 		return getBusiness(businessClass, iwac);
 	}
@@ -72,8 +76,11 @@ public class AccountingBusinessManager {
 	}
 	
 	private Class getBusinessClass(CaseCode caseCode) {
-		String code = caseCode.getCode();
-		return (Class) getCaseCodeBusinessMap().get(code);
+		return getBusinessClass(caseCode.getCode());
+	}
+	
+	private Class getBusinessClass(String caseCode) {
+		return (Class) getCaseCodeBusinessMap().get(caseCode);		
 	}
 	
 	public Collection getCaseCodes() {
