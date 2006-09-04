@@ -5,6 +5,12 @@
   </properties>
   <body>
   
+  <release version="1.0.4" date="2006-09-04">
+      <action dev="laddi" type="changes">
+      		Added new getter/setter for number of units (float)
+      </action>
+    </release>
+    
   <release version="1.0.3" date="2006-08-31">
       <action dev="palli" type="changes">
       		Changed AccountingBusinessManager to get Navision lists to work

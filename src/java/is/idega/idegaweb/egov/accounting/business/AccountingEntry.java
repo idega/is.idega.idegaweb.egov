@@ -152,6 +152,20 @@ public interface AccountingEntry {
 	public void setUnitPrice(float unitPrice);
 
 	/**
+	 * Gets the units value for this BillingEntry.
+	 * 
+	 * @return units
+	 */
+	public float getUnits();
+
+	/**
+	 * Sets the units value for this BillingEntry.
+	 * 
+	 * @param units
+	 */
+	public void setUnits(float units);
+
+	/**
 	 * Gets the cardNumber value for this BillingEntry.
 	 * 
 	 * @return cardNumber
