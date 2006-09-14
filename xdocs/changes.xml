@@ -5,6 +5,12 @@
   </properties>
   <body>
   
+  <release version="1.0.5" date="2006-09-14">
+      <action dev="laddi" type="changes">
+      		Added new getter/setter for extra information (Object) to AccountingEntry
+      </action>
+    </release>
+    
   <release version="1.0.4" date="2006-09-04">
       <action dev="laddi" type="changes">
       		Added new getter/setter for number of units (float)

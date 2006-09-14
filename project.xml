@@ -5,7 +5,7 @@
   <pomVersion>3</pomVersion>
   <name>eGov Base Bundle</name>
   <artifactId>is.idega.idegaweb.egov</artifactId>
-  <currentVersion>1.0.4</currentVersion>
+  <currentVersion>1.0.5</currentVersion>
   <inceptionYear>2006</inceptionYear>
   <shortDescription>eGov Base Bundle</shortDescription>
   <versions>

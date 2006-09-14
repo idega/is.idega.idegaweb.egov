@@ -221,4 +221,18 @@ public interface AccountingEntry {
 	 */
 	public void setCardExpirationYear(int cardExpirationYear);
 
+	/**
+	 * Gets the extra information value for this BillingEntry.
+	 * 
+	 * @return Object
+	 */
+	public Object getExtraInformation();
+
+	/**
+	 * Sets the extra information value for this BillingEntry.
+	 * 
+	 * @param extraInformation
+	 */
+	public void setExtraInformation(Object extraInformation);
+
 }
