@@ -1,12 +1,15 @@
 package is.idega.idegaweb.egov.accounting.business;
 
 
-import com.idega.user.data.Group;
+import java.rmi.RemoteException;
+import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
+
 import com.idega.business.IBOService;
+import com.idega.user.data.Group;
 import com.idega.user.data.User;
-import java.rmi.RemoteException;
 
 public interface CitizenBusiness extends IBOService {
 
@@ -33,5 +36,5 @@ public interface CitizenBusiness extends IBOService {
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getRootOtherCommuneCitizensGroup
 	 */
-	public Group getRootOtherCommuneCitizensGroup() throws CreateException, FinderException, RemoteException, RemoteException;
+	public Collection getRootOtherCommuneCitizensGroups() throws CreateException, FinderException, RemoteException, RemoteException;
 }

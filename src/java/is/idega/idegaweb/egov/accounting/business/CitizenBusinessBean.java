@@ -25,7 +25,7 @@ import com.idega.user.business.UserBusinessBean;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
 
-public class CitizenBusinessBean extends UserBusinessBean {
+public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusiness {
 
 	private final String ROOT_CITIZEN_GROUP_ID_PARAMETER_NAME = "commune_id";
 	private final String ROOT_ACCEPTED_CITIZEN_GROUP_ID_PARAMETER_NAME = "accepted_citizen_group_id";
