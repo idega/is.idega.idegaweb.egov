@@ -26,6 +26,20 @@ public interface AccountingEntry {
 	public void setPersonalId(java.lang.String personalId);
 
 	/**
+	 * Gets the name value for this BillingEntry.
+	 * 
+	 * @return name
+	 */
+	public java.lang.String getName();
+
+	/**
+	 * Sets the name value for this BillingEntry.
+	 * 
+	 * @param name
+	 */
+	public void setName(java.lang.String name);
+
+	/**
 	 * Gets the payerPersonalId value for this BillingEntry.
 	 * 
 	 * @return payerPersonalId
