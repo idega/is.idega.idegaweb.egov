@@ -1,50 +1,62 @@
 <document>
 	<properties>
 		<title>eGov Base changes</title>
-		<author email="laddi@idega.com">Thorhallur "Laddi" Helgason</author>
+		<author email="laddi@idega.com">
+			Thorhallur "Laddi" Helgason
+		</author>
 	</properties>
-	
+
 	<body>
+		<release version="1.0.8" date="2007-03-09">
+			<action dev="palli" type="update">
+				Updating and fixing dependencies to create a new sunnan3
+				application.
+			</action>
+		</release>
 		<release version="1.0.7" date="2006-12-20">
 			<action dev="laddi" type="update">
 				Added new get/set for name to AccountingEntry.
 			</action>
-	    </release>
-	    
+		</release>
+
 		<release version="1.0.6" date="2006-11-23">
 			<action dev="laddi" type="update">
-				Added new CitizenBusiness for handling citizen specific methods.
+				Added new CitizenBusiness for handling citizen specific
+				methods.
 			</action>
-	    </release>
-	    
+		</release>
+
 		<release version="1.0.5" date="2006-09-14">
 			<action dev="laddi" type="update">
-				Added new getter/setter for extra information (Object) to AccountingEntry
+				Added new getter/setter for extra information (Object)
+				to AccountingEntry
 			</action>
-	    </release>
-	    
+		</release>
+
 		<release version="1.0.4" date="2006-09-04">
 			<action dev="laddi" type="update">
 				Added new getter/setter for number of units (float)
 			</action>
-	    </release>
-	    
+		</release>
+
 		<release version="1.0.3" date="2006-08-31">
 			<action dev="palli" type="update">
-				Changed AccountingBusinessManager to get Navision lists to work
+				Changed AccountingBusinessManager to get Navision lists
+				to work
 			</action>
-	    </release>
-	    
+		</release>
+
 		<release version="1.0.2" date="2006-08-24">
 			<action dev="tryggvil" type="fix">
-				Fixed small NullPointerException in AccountingBusinessManager
+				Fixed small NullPointerException in
+				AccountingBusinessManager
 			</action>
-	    </release>
-	  
+		</release>
+
 		<release version="1.0.1" date="2006-08-07">
 			<action dev="laddi" type="update">
 				Declaring new version of block.
 			</action>
-	    </release>
+		</release>
 	</body>
 </document>
