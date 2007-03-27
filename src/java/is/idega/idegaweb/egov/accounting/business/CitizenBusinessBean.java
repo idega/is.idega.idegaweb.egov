@@ -1,31 +1,42 @@
 /*
- * $Id$ Created on Nov 14,
- * 2006
+ * $Id$ Created on Nov 14, 2006
  * 
  * Copyright (C) 2006 Idega Software hf. All Rights Reserved.
  * 
- * This software is the proprietary information of Idega hf. Use is subject to
- * license terms.
+ * This software is the proprietary information of Idega hf. Use is subject to license terms.
  */
 package is.idega.idegaweb.egov.accounting.business;
+
+import is.idega.block.family.business.FamilyLogic;
+import is.idega.block.family.business.NoCustodianFound;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
 import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
+import com.idega.core.contact.data.Phone;
 import com.idega.core.location.business.CommuneBusiness;
+import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
+import com.idega.data.IDOLookup;
+import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWMainApplicationSettings;
+import com.idega.user.business.NoPhoneFoundException;
+import com.idega.user.business.UserBusiness;
 import com.idega.user.business.UserBusinessBean;
 import com.idega.user.data.Group;
 import com.idega.user.data.User;
+import com.idega.user.data.UserHome;
+import com.idega.util.text.TextSoap;
 
-public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusiness {
+public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusiness, UserBusiness {
 
 	private final String ROOT_CITIZEN_GROUP_ID_PARAMETER_NAME = "commune_id";
 	private final String ROOT_ACCEPTED_CITIZEN_GROUP_ID_PARAMETER_NAME = "accepted_citizen_group_id";
@@ -39,10 +50,19 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		return (CommuneBusiness) getServiceInstance(CommuneBusiness.class);
 	}
 
+	public Commune getDefaultCommune() {
+		try {
+			return getCommuneBusiness().getDefaultCommune();
+		}
+		catch (RemoteException re) {
+			throw new IBORuntimeException(re);
+		}
+	}
+
 	public boolean hasCitizenAccount(User user) throws RemoteException {
 		return hasUserLogin(user);
 	}
-	
+
 	public boolean hasGuestAccount(User user) {
 		try {
 			return getRootOtherCommuneCitizensGroups().contains(user.getPrimaryGroup());
@@ -59,10 +79,92 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		return false;
 	}
 
+	public User getCustodianForChild(User child) throws RemoteException {
+		User performer = null;
+		Collection parents = getParentsForChild(child);
+		if (parents != null) {
+			Iterator iter = parents.iterator();
+			while (iter.hasNext()) {
+				User parent = (User) iter.next();
+				if (hasCitizenAccount(parent)) {
+					performer = parent;
+					break;
+				}
+				if (!iter.hasNext()) {
+					performer = parent;
+				}
+			}
+		}
+
+		return performer;
+	}
+
+	public Collection getParentsForChild(User child) throws RemoteException {
+		try {
+			return getMemberFamilyLogic().getCustodiansFor(child);
+		}
+		catch (NoCustodianFound ncf) {
+			return null;
+		}
+	}
+
+	public Phone getChildHomePhone(User child) throws RemoteException {
+		Address childAddress = getUsersMainAddress(child);
+		Collection parents = getParentsForChild(child);
+		if (parents != null) {
+			Address parentAddress;
+			Iterator iter = parents.iterator();
+			while (iter.hasNext()) {
+				User parent = (User) iter.next();
+				parentAddress = getUsersMainAddress(parent);
+				if (childAddress != null && parentAddress != null) {
+					if (getIfUserAddressesMatch(childAddress, parentAddress)) {
+						try {
+							return this.getUsersHomePhone(parent);
+						}
+						catch (NoPhoneFoundException npfe) {
+							// empty
+						}
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public boolean haveSameAddress(User user, User compareUser) throws RemoteException {
+		if (((Integer) user.getPrimaryKey()).intValue() == ((Integer) compareUser.getPrimaryKey()).intValue()) {
+			return true;
+		}
+
+		Address userAddress = getUsersMainAddress(user);
+		Address otherUserAddress = getUsersMainAddress(compareUser);
+		if (userAddress != null && otherUserAddress != null) {
+			return getIfUserAddressesMatch(userAddress, otherUserAddress);
+		}
+
+		return false;
+	}
+
+	private boolean getIfUserAddressesMatch(Address userAddress, Address userAddressToCompare) {
+		if (((Integer) userAddress.getPrimaryKey()).intValue() == ((Integer) userAddressToCompare.getPrimaryKey()).intValue()) {
+			return true;
+		}
+
+		String address1 = userAddress.getStreetAddress().toUpperCase();
+		String address2 = userAddressToCompare.getStreetAddress().toUpperCase();
+
+		if (TextSoap.findAndCut(address1, " ").equalsIgnoreCase(TextSoap.findAndCut(address2, " "))) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
-	 * Creates (if not available) and returns the default usergroup all citizens,
-	 * read from imports, are members of. throws a CreateException if it failed to
-	 * locate or create the group.
+	 * Creates (if not available) and returns the default usergroup all citizens, read from imports, are members of. throws a CreateException if it
+	 * failed to locate or create the group.
 	 */
 	public Group getRootCitizenGroup() throws CreateException, FinderException, RemoteException {
 		if (this.rootCitizenGroup == null) {
@@ -75,9 +177,8 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	/**
-	 * Creates (if not available) and returns the group for citizens that have a
-	 * citizen account throws a CreateException if it failed to locate or create
-	 * the group.
+	 * Creates (if not available) and returns the group for citizens that have a citizen account throws a CreateException if it failed to locate or
+	 * create the group.
 	 * 
 	 * @throws FinderException
 	 */
@@ -91,8 +192,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	/**
-	 * Creates (if not available) and returns the default usergroup for all
-	 * citizens not living in the commune, read from imports. throws a
+	 * Creates (if not available) and returns the default usergroup for all citizens not living in the commune, read from imports. throws a
 	 * CreateException if it failed to locate or create the group.
 	 */
 	public Collection getRootOtherCommuneCitizensGroups() throws CreateException, FinderException, RemoteException {
@@ -164,5 +264,30 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		}
 
 		return collection;
+	}
+
+	public Collection findUsersByConditions(String firstName, String middleName, String lastName, String pid) {
+		UserHome home;
+		try {
+			home = (UserHome) IDOLookup.getHome(User.class);
+			return home.findUsersByConditions(firstName, middleName, lastName, pid, null, null, -1, -1, -1, -1, null, null, true, false);
+		}
+		catch (IDOLookupException e1) {
+			e1.printStackTrace();
+		}
+		catch (FinderException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public FamilyLogic getMemberFamilyLogic() {
+		try {
+			return (FamilyLogic) this.getServiceInstance(FamilyLogic.class);
+		}
+		catch (IBOLookupException e) {
+			throw new IBORuntimeException(e);
+		}
 	}
 }
