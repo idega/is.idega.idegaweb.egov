@@ -290,4 +290,21 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 			throw new IBORuntimeException(e);
 		}
 	}
+	
+	public String getUsersCommuneURL(User user){
+		Collection addresses = user.getAddresses();
+		Iterator iter = addresses.iterator();
+		while (iter.hasNext()) {
+			Address	address = (Address) iter.next();
+			Commune commune = address.getCommune();
+			if(commune!=null){
+				String URL = commune.getCommuneWebsiteURL();
+				if(URL!=null){
+					return URL;
+				}	
+			}
+		}
+		
+		return null;
+	}
 }

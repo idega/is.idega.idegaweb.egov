@@ -7,6 +7,12 @@
 	</properties>
 
 	<body>
+		<release version="1.0.10" date="2007-04-02">
+			<action dev="palli" type="update">
+				Copied CommuneLoginRedirector from the se commune bundle to the is egov bundle.
+			</action>
+		</release>
+
 		<release version="1.0.9" date="2007-03-27">
 			<action dev="laddi" type="update">
 				Refactoring/Elimination of se bundles.

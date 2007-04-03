@@ -14,7 +14,6 @@ import com.idega.user.data.User;
 import java.rmi.RemoteException;
 
 public interface CitizenBusiness extends IBOService, UserBusiness {
-
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getDefaultCommune
 	 */
@@ -23,7 +22,8 @@ public interface CitizenBusiness extends IBOService, UserBusiness {
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#hasCitizenAccount
 	 */
-	public boolean hasCitizenAccount(User user) throws RemoteException, RemoteException;
+	public boolean hasCitizenAccount(User user) throws RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#hasGuestAccount
@@ -33,45 +33,60 @@ public interface CitizenBusiness extends IBOService, UserBusiness {
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getCustodianForChild
 	 */
-	public User getCustodianForChild(User child) throws RemoteException, RemoteException;
+	public User getCustodianForChild(User child) throws RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getParentsForChild
 	 */
-	public Collection getParentsForChild(User child) throws RemoteException, RemoteException;
+	public Collection getParentsForChild(User child) throws RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getChildHomePhone
 	 */
-	public Phone getChildHomePhone(User child) throws RemoteException, RemoteException;
+	public Phone getChildHomePhone(User child) throws RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#haveSameAddress
 	 */
-	public boolean haveSameAddress(User user, User compareUser) throws RemoteException, RemoteException;
+	public boolean haveSameAddress(User user, User compareUser)
+			throws RemoteException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getRootCitizenGroup
 	 */
-	public Group getRootCitizenGroup() throws CreateException, FinderException, RemoteException, RemoteException;
+	public Group getRootCitizenGroup() throws CreateException, FinderException,
+			RemoteException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getRootAcceptedCitizenGroup
 	 */
-	public Group getRootAcceptedCitizenGroup() throws CreateException, RemoteException, FinderException, RemoteException;
+	public Group getRootAcceptedCitizenGroup() throws CreateException,
+			RemoteException, FinderException, RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getRootOtherCommuneCitizensGroups
 	 */
-	public Collection getRootOtherCommuneCitizensGroups() throws CreateException, FinderException, RemoteException, RemoteException;
+	public Collection getRootOtherCommuneCitizensGroups()
+			throws CreateException, FinderException, RemoteException,
+			RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#findUsersByConditions
 	 */
-	public Collection findUsersByConditions(String firstName, String middleName, String lastName, String pid) throws RemoteException;
+	public Collection findUsersByConditions(String firstName,
+			String middleName, String lastName, String pid)
+			throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getMemberFamilyLogic
 	 */
 	public FamilyLogic getMemberFamilyLogic() throws RemoteException;
+
+	/**
+	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getUsersCommuneURL
+	 */
+	public String getUsersCommuneURL(User user) throws RemoteException;
 }
