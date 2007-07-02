@@ -6,5 +6,6 @@ import com.idega.business.IBOHome;
 import java.rmi.RemoteException;
 
 public interface CitizenBusinessHome extends IBOHome {
+
 	public CitizenBusiness create() throws CreateException, RemoteException;
 }

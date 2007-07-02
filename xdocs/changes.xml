@@ -7,6 +7,15 @@
 	</properties>
 
 	<body>
+		<release version="1.0.11" date="2007-07-02">
+			<action dev="laddi" type="update">
+				Added setting of role to accepted citizen group.
+			</action>
+			<action dev="laddi" type="update">
+				Added methods to CitizenFinder.
+			</action>
+		</release>
+
 		<release version="1.0.10" date="2007-04-02">
 			<action dev="palli" type="update">
 				Copied CommuneLoginRedirector from the se commune bundle to the is egov bundle.

@@ -25,6 +25,7 @@ import com.idega.core.contact.data.Phone;
 import com.idega.core.location.business.CommuneBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
+import com.idega.core.location.data.PostalCode;
 import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.idegaweb.IWMainApplicationSettings;
@@ -53,6 +54,32 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	public Commune getDefaultCommune() {
 		try {
 			return getCommuneBusiness().getDefaultCommune();
+		}
+		catch (RemoteException re) {
+			throw new IBORuntimeException(re);
+		}
+	}
+
+	public boolean isCitizenOfDefaultCommune(User user) {
+		return isCitizenOfCommune(user, getDefaultCommune());
+	}
+
+	public boolean isCitizenOfCommune(User user, Commune commune) {
+		try {
+			Address address = getUsersMainAddress(user);
+			Commune userCommune = address != null ? address.getCommune() : null;
+			if (userCommune != null) {
+				return userCommune.equals(commune);
+			}
+			else if (address != null) {
+				PostalCode code = address.getPostalCode();
+				Commune postalCommune = code.getCommune();
+				if (postalCommune != null) {
+					return postalCommune.equals(commune);
+				}
+			}
+
+			return false;
 		}
 		catch (RemoteException re) {
 			throw new IBORuntimeException(re);
@@ -163,8 +190,9 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	/**
-	 * Creates (if not available) and returns the default usergroup all citizens, read from imports, are members of. throws a CreateException if it
-	 * failed to locate or create the group.
+	 * Creates (if not available) and returns the default usergroup all citizens,
+	 * read from imports, are members of. throws a CreateException if it failed to
+	 * locate or create the group.
 	 */
 	public Group getRootCitizenGroup() throws CreateException, FinderException, RemoteException {
 		if (this.rootCitizenGroup == null) {
@@ -177,8 +205,9 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	/**
-	 * Creates (if not available) and returns the group for citizens that have a citizen account throws a CreateException if it failed to locate or
-	 * create the group.
+	 * Creates (if not available) and returns the group for citizens that have a
+	 * citizen account throws a CreateException if it failed to locate or create
+	 * the group.
 	 * 
 	 * @throws FinderException
 	 */
@@ -192,7 +221,8 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	/**
-	 * Creates (if not available) and returns the default usergroup for all citizens not living in the commune, read from imports. throws a
+	 * Creates (if not available) and returns the default usergroup for all
+	 * citizens not living in the commune, read from imports. throws a
 	 * CreateException if it failed to locate or create the group.
 	 */
 	public Collection getRootOtherCommuneCitizensGroups() throws CreateException, FinderException, RemoteException {
@@ -290,21 +320,21 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 			throw new IBORuntimeException(e);
 		}
 	}
-	
-	public String getUsersCommuneURL(User user){
+
+	public String getUsersCommuneURL(User user) {
 		Collection addresses = user.getAddresses();
 		Iterator iter = addresses.iterator();
 		while (iter.hasNext()) {
-			Address	address = (Address) iter.next();
+			Address address = (Address) iter.next();
 			Commune commune = address.getCommune();
-			if(commune!=null){
+			if (commune != null) {
 				String URL = commune.getCommuneWebsiteURL();
-				if(URL!=null){
+				if (URL != null) {
 					return URL;
-				}	
+				}
 			}
 		}
-		
+
 		return null;
 	}
 }
