@@ -73,9 +73,11 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 			}
 			else if (address != null) {
 				PostalCode code = address.getPostalCode();
-				Commune postalCommune = code.getCommune();
-				if (postalCommune != null) {
-					return postalCommune.equals(commune);
+				if (code != null) {
+					Commune postalCommune = code.getCommune();
+					if (postalCommune != null) {
+						return postalCommune.equals(commune);
+					}
 				}
 			}
 
