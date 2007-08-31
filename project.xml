@@ -69,6 +69,11 @@
       <name>1.0.12</name>
       <tag>EGOV_BASE_1_0_12</tag>
     </version>
+    <version>
+      <id>1.0.12</id>
+      <name>1.0.12</name>
+      <tag>EGOV_BASE_1_0_12</tag>
+    </version>
   </versions>
   <branches/>
   <developers>
