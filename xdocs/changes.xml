@@ -7,6 +7,12 @@
 	</properties>
 
 	<body>
+		<release version="1.0.12" date="2007-08-31">
+			<action dev="alexis" type="update">
+				Update dependency to com.idega.block.process to 3.1.14
+			</action>
+		</release>
+		
 		<release version="1.0.11" date="2007-07-02">
 			<action dev="laddi" type="update">
 				Added setting of role to accepted citizen group.
