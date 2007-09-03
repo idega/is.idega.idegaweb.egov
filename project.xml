@@ -69,11 +69,6 @@
       <name>1.0.12</name>
       <tag>EGOV_BASE_1_0_12</tag>
     </version>
-    <version>
-      <id>1.0.12</id>
-      <name>1.0.12</name>
-      <tag>EGOV_BASE_1_0_12</tag>
-    </version>
   </versions>
   <branches/>
   <developers>
@@ -89,7 +84,7 @@
     <dependency>
       <groupId>bundles</groupId>
       <artifactId>com.idega.core</artifactId>
-      <version>3.1.40</version>
+      <version>3.1.62</version>
       <type>jar</type>
       <url>http://www.idega.com/</url>
     </dependency>
