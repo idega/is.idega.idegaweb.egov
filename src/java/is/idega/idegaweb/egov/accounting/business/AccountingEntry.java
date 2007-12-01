@@ -249,4 +249,13 @@ public interface AccountingEntry {
 	 */
 	public void setExtraInformation(Object extraInformation);
 
+	/**
+	 * 
+	 */
+	public int getNumberOfDaysPrWeek();
+	
+	/**
+	 * 
+	 */
+	public void setNumberOfDaysPrWeek(int numberOfDays);
 }
