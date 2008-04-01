@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page-templates>
+	<page name="Administration" type="administration" iconfile="idegaweb/bundles/is.idega.idegaweb.egov.bundle/resources/images/pageIcons/administration.png" templatefile="idegaweb/bundles/is.idega.idegaweb.egov.bundle/resources/pages/egov_administration.xml"></page>	
+
+</page-templates>
