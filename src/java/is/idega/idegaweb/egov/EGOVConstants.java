@@ -12,5 +12,7 @@ package is.idega.idegaweb.egov;
 public class EGOVConstants {
 
 	public static final String ROLE_KEY_CITIZEN = "egovCitizen";
+	
+	public static final String COMMUNE_ACCPETED_CITIZENS = "Commune Accepted Citizens";
 
 }

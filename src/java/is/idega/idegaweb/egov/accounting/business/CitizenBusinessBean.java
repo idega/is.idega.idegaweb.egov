@@ -9,6 +9,7 @@ package is.idega.idegaweb.egov.accounting.business;
 
 import is.idega.block.family.business.FamilyLogic;
 import is.idega.block.family.business.NoCustodianFound;
+import is.idega.idegaweb.egov.EGOVConstants;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -217,7 +218,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		if (this.rootAcceptedCitizenGroup == null) {
 			Group parent = getRootCitizenGroup();
 
-			this.rootAcceptedCitizenGroup = getGroupCreateIfNecessaryStoreAsApplicationBinding(this.ROOT_ACCEPTED_CITIZEN_GROUP_ID_PARAMETER_NAME, "Commune Accepted Citizens", "The group for all citizens with an account in the commune", parent);
+			this.rootAcceptedCitizenGroup = getGroupCreateIfNecessaryStoreAsApplicationBinding(this.ROOT_ACCEPTED_CITIZEN_GROUP_ID_PARAMETER_NAME, EGOVConstants.COMMUNE_ACCPETED_CITIZENS, "The group for all citizens with an account in the commune", parent);
 		}
 		return this.rootAcceptedCitizenGroup;
 	}
