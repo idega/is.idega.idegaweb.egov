@@ -1,7 +1,7 @@
 go=Velja hlutverk
 role_name.egovCitizen=\u00CDb\u00FAi
 role_name.fskCompany=Fyrirt\u00E6ki/f\u00E9lag
-role_name.userapplication=Notendakerfi
-role.company_super_admin=Umsj\u00F3narma\u00F0ur fyrirt\u00E6kjag\u00E1ttar
-role.company_admin=Umsj\u00F3narma\u00F0ur fyrirt\u00E6kis
-role.company_staff=Starfsma\u00F0ur \u00ED fyrirt\u00E6ki
+role_name.userapplication=Umsj\u00F3narma\u00F0ur notenda og h\u00F3pa
+role_name.company_super_admin=Umsj\u00F3narma\u00F0ur fyrirt\u00E6kjag\u00E1ttar
+role_name.company_admin=Umsj\u00F3narma\u00F0ur fyrirt\u00E6kis
+role_name.company_staff=Starfsma\u00F0ur \u00ED fyrirt\u00E6ki

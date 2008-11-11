@@ -1,4 +1,7 @@
 go=Select role
+role_name.company_admin=Company administrator
+role_name.company_staff=Company employee
+role_name.company_super_admin=Institution administrator
 role_name.egovCitizen=\u00CDb\u00FAi
 role_name.fskCompany=Fyrirt\u00E6ki/f\u00E9lag
-role_name.userapplication=Notendakerfi
+role_name.userapplication=Users and groups manager
