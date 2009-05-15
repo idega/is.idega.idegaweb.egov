@@ -11,8 +11,9 @@ package is.idega.idegaweb.egov.accounting.business;
 
 import java.sql.Date;
 
+import com.idega.business.IBOService;
 
-public interface AccountingBusiness {
+public interface AccountingBusiness extends IBOService {
 
 	public AccountingEntry[] getAccountingEntries(String productCode, String providerCode, Date fromDate, Date toDate);
 	
