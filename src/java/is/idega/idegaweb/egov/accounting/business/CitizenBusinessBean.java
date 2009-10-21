@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -94,6 +95,11 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	public boolean hasGuestAccount(User user) {
+		if (user == null) {
+			log(Level.WARNING, "User is not provided!");
+			return false;
+		}
+		
 		try {
 			return getRootOtherCommuneCitizensGroups().contains(user.getPrimaryGroup());
 		}
