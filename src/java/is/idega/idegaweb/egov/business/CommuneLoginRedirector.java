@@ -1,11 +1,11 @@
 /*
  * $Id: CommuneLoginRedirector.java,v 1.1 2007/04/03 16:47:37 palli Exp $
  * Created on Nov 3, 2005
- *
+ * 
  * Copyright (C) 2005 Idega Software hf. All Rights Reserved.
- *
- * This software is the proprietary information of Idega hf.
- * Use is subject to license terms.
+ * 
+ * This software is the proprietary information of Idega hf. Use is subject to
+ * license terms.
  */
 package is.idega.idegaweb.egov.business;
 
@@ -26,10 +26,9 @@ import com.idega.core.accesscontrol.business.ServletFilterChainInterruptExceptio
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
-import com.idega.user.data.User;
+import com.idega.user.data.bean.User;
 
-public class CommuneLoginRedirector implements AuthenticationListener,
-		ServletContextListener {
+public class CommuneLoginRedirector implements AuthenticationListener, ServletContextListener {
 
 	public static final String PARAMETER_REDIRECT_TO_COMMUNE_WEB = "redirectToCommuneWeb";
 
@@ -49,43 +48,33 @@ public class CommuneLoginRedirector implements AuthenticationListener,
 	 * @param currentUser
 	 * @throws ServletFilterChainInterruptException
 	 */
-	public void onLogon(IWContext iwc, User currentUser)
-			throws ServletFilterChainInterruptException {
+	public void onLogon(IWContext iwc, User currentUser) throws ServletFilterChainInterruptException {
 		// get address and commune code and forward to correct server...
-		boolean tryRedirect = iwc
-				.isParameterSet(PARAMETER_REDIRECT_TO_COMMUNE_WEB);
-
+		boolean tryRedirect = iwc.isParameterSet(PARAMETER_REDIRECT_TO_COMMUNE_WEB);
 		if (tryRedirect) {
 			String communeURL;
+			com.idega.user.data.User oldUser = iwc.getCurrentUser();
 			try {
-				communeURL = getCitizenBusiness(iwc).getUsersCommuneURL(
-						currentUser);
+				communeURL = getCitizenBusiness(iwc).getUsersCommuneURL(oldUser);
 				if (communeURL != null) {
 					try {
 						String uuid = currentUser.getUniqueId();
-
 						if (uuid != null && communeURL.indexOf("?") == -1) {
 							communeURL += "?";
 						}
-
 						if (uuid != null) {
-							communeURL += "&"
-									+ LoginBusinessBean.PARAM_LOGIN_BY_UNIQUE_ID
-									+ "=" + uuid;
-							communeURL += "&"
-									+ LoginBusinessBean.LoginStateParameter
-									+ "=" + LoginBusinessBean.LOGIN_EVENT_LOGIN;
+							communeURL += "&" + LoginBusinessBean.PARAM_LOGIN_BY_UNIQUE_ID + "=" + uuid;
+							communeURL += "&" + LoginBusinessBean.LoginStateParameter + "=" + LoginBusinessBean.LOGIN_EVENT_LOGIN;
 						}
-
 						iwc.getResponse().sendRedirect(communeURL);
-						throw new ServletFilterChainInterruptException(
-								"CommuneLoginRedirector sending the user to his home commune website: "
-										+ communeURL);
-					} catch (IOException e) {
+						throw new ServletFilterChainInterruptException("CommuneLoginRedirector sending the user to his home commune website: " + communeURL);
+					}
+					catch (IOException e) {
 						e.printStackTrace();
 					}
 				}
-			} catch (RemoteException e1) {
+			}
+			catch (RemoteException e1) {
 				e1.printStackTrace();
 			}
 		}
@@ -106,19 +95,18 @@ public class CommuneLoginRedirector implements AuthenticationListener,
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent event) {
-		IWApplicationContext iwac = IWMainApplication
-				.getDefaultIWApplicationContext();
+		IWApplicationContext iwac = IWMainApplication.getDefaultIWApplicationContext();
 		try {
-			AuthenticationBusiness biz = (AuthenticationBusiness) IBOLookup
-					.getServiceInstance(iwac, AuthenticationBusiness.class);
+			AuthenticationBusiness biz = (AuthenticationBusiness) IBOLookup.getServiceInstance(iwac, AuthenticationBusiness.class);
 			biz.addAuthenticationListener(this);
-		} catch (IBOLookupException e) {
-			e.printStackTrace();
-		} catch (RemoteException e) {
+		}
+		catch (IBOLookupException e) {
 			e.printStackTrace();
 		}
-		System.out
-				.println("[eGov] LogonRedirector(AuthenticationListener) initialized.");
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+		System.out.println("[eGov] LogonRedirector(AuthenticationListener) initialized.");
 	}
 
 	/**
@@ -130,9 +118,9 @@ public class CommuneLoginRedirector implements AuthenticationListener,
 	public CitizenBusiness getCitizenBusiness(IWContext iwc) {
 		CitizenBusiness biz = null;
 		try {
-			biz = (CitizenBusiness) IBOLookup.getServiceInstance(iwc,
-					CitizenBusiness.class);
-		} catch (IBOLookupException e) {
+			biz = (CitizenBusiness) IBOLookup.getServiceInstance(iwc, CitizenBusiness.class);
+		}
+		catch (IBOLookupException e) {
 			e.printStackTrace();
 		}
 		return biz;

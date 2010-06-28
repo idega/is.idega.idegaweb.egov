@@ -262,10 +262,10 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		else {
 			System.err.println("Trying to store " + createName + " group");
 			if (parentGroup == null) {
-				group = getGroupBusiness().createGroup(createName, createDescription);
+				group = getGroupBusiness().createGroup(createName, createDescription, "permission");
 			}
 			else {
-				group = getGroupBusiness().createGroupUnder(createName, createDescription, parentGroup);
+				group = getGroupBusiness().createGroupUnder(createName, createDescription, "permission", parentGroup);
 			}
 
 			groupId = group.getPrimaryKey().toString();
@@ -292,10 +292,10 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		else {
 			System.err.println("Trying to store " + createName + " group");
 			if (parentGroup == null) {
-				group = getGroupBusiness().createGroup(createName, createDescription);
+				group = getGroupBusiness().createGroup(createName, createDescription, "permission");
 			}
 			else {
-				group = getGroupBusiness().createGroupUnder(createName, createDescription, parentGroup);
+				group = getGroupBusiness().createGroupUnder(createName, createDescription, "permission", parentGroup);
 			}
 
 			settings.setProperty(parameter, group.getPrimaryKey().toString());
