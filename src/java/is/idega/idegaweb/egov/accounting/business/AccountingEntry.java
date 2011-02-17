@@ -258,4 +258,12 @@ public interface AccountingEntry {
 	 * 
 	 */
 	public void setNumberOfDaysPrWeek(int numberOfDays);
+	
+	public String getFamilyNumber();
+	
+	public void setFamilyNumber(String familyNumber);
+	
+	public int getSiblingNumber();
+	
+	public void setSiblingNumber(int siblingNumber);
 }
