@@ -23,43 +23,50 @@ import com.idega.core.accesscontrol.business.AuthenticationBusiness;
 import com.idega.core.accesscontrol.business.AuthenticationListener;
 import com.idega.core.accesscontrol.business.LoginBusinessBean;
 import com.idega.core.accesscontrol.business.ServletFilterChainInterruptException;
+import com.idega.data.IDOLookup;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWMainApplication;
 import com.idega.presentation.IWContext;
-import com.idega.user.data.User;
+import com.idega.user.data.UserHome;
 
-public class CommuneLoginRedirector implements AuthenticationListener,
-		ServletContextListener {
+public class CommuneLoginRedirector implements AuthenticationListener, ServletContextListener {
 
 	public static final String PARAMETER_REDIRECT_TO_COMMUNE_WEB = "redirectToCommuneWeb";
 
 	/**
-	 * 
+	 *
 	 * @return a human readable identifier for the listener
 	 */
+	@Override
 	public String getAuthenticationListenerName() {
 		return "CommuneLoginRedirector";
 	}
 
 	/**
 	 * Called when a user successfully logs on
-	 * 
+	 *
 	 * @param iwc
 	 *            request and response wrapper
 	 * @param currentUser
 	 * @throws ServletFilterChainInterruptException
 	 */
-	public void onLogon(IWContext iwc, User currentUser)
-			throws ServletFilterChainInterruptException {
+	@Override
+	public void onLogon(IWContext iwc, com.idega.user.data.bean.User currentUser) throws ServletFilterChainInterruptException {
 		// get address and commune code and forward to correct server...
-		boolean tryRedirect = iwc
-				.isParameterSet(PARAMETER_REDIRECT_TO_COMMUNE_WEB);
+		boolean tryRedirect = iwc.isParameterSet(PARAMETER_REDIRECT_TO_COMMUNE_WEB);
 
 		if (tryRedirect) {
+			com.idega.user.data.User user = null;
+			try {
+				UserHome userHome = (UserHome) IDOLookup.getHome(com.idega.user.data.User.class);
+				user = userHome.findByPrimaryKey(currentUser.getId());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			String communeURL;
 			try {
-				communeURL = getCitizenBusiness(iwc).getUsersCommuneURL(
-						currentUser);
+				communeURL = getCitizenBusiness(iwc).getUsersCommuneURL(user);
 				if (communeURL != null) {
 					try {
 						String uuid = currentUser.getUniqueId();
@@ -93,18 +100,20 @@ public class CommuneLoginRedirector implements AuthenticationListener,
 
 	/**
 	 * Called when a user successfully logs off
-	 * 
+	 *
 	 * @param iwc
 	 *            request and response wrapper
 	 * @param lastUser
 	 */
-	public void onLogoff(IWContext iwc, User lastUser) {
+	@Override
+	public void onLogoff(IWContext iwc, com.idega.user.data.bean.User lastUser) {
 		// do nothing
 	}
 
 	/**
 	 * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
 	 */
+	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		IWApplicationContext iwac = IWMainApplication
 				.getDefaultIWApplicationContext();
@@ -124,6 +133,7 @@ public class CommuneLoginRedirector implements AuthenticationListener,
 	/**
 	 * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
 	 */
+	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 	}
 
