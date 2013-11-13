@@ -26,8 +26,10 @@ import com.idega.user.data.Group;
  *          Last modified: $Date: 2008/09/22 12:04:02 $ by $Author: civilis $
  */
 @Scope("singleton")
-@Service
+@Service(CitizenStandardGroup.BEAN_NAME)
 public class CitizenStandardGroup implements StandardGroup {
+	
+	public static final String BEAN_NAME = "citizenStandardGroup";
 
 	public Group getGroup() {
 
