@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +24,17 @@ import com.idega.user.data.Group;
 /**
  * @author <a href="mailto:civilis@idega.com">Vytautas Čivilis</a>
  * @version $Revision: 1.1 $
- * 
+ *
  *          Last modified: $Date: 2008/09/22 12:04:02 $ by $Author: civilis $
  */
-@Scope("singleton")
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 @Service(CitizenStandardGroup.BEAN_NAME)
+@Qualifier("citizenStandardGroup")
 public class CitizenStandardGroup implements StandardGroup {
-	
+
 	public static final String BEAN_NAME = "citizenStandardGroup";
 
+	@Override
 	public Group getGroup() {
 
 		try {
@@ -51,7 +55,7 @@ public class CitizenStandardGroup implements StandardGroup {
 
 	protected CitizenBusiness getCitizenBusiness(IWApplicationContext iwac) {
 		try {
-			return (CitizenBusiness) IBOLookup.getServiceInstance(iwac,
+			return IBOLookup.getServiceInstance(iwac,
 					CitizenBusiness.class);
 		} catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
