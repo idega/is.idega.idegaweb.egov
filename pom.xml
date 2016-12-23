@@ -3,12 +3,10 @@
   <parent>
     <groupId>com.idega.block.egov</groupId>
     <artifactId>com.idega.block.egov</artifactId>
-    <version>5.0.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
   </parent>
   <name>eGov Base Bundle</name>
-  <groupId>com.idega.block.egov</groupId>
   <artifactId>is.idega.idegaweb.egov</artifactId>
-  <version>5.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <inceptionYear>2005</inceptionYear>
   <description>eGov General Cases</description>
