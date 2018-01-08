@@ -1,17 +1,21 @@
 package is.idega.idegaweb.egov.accounting.business;
 
 
-import com.idega.user.data.Group;
-import java.util.Collection;
-import javax.ejb.CreateException;
-import com.idega.core.location.data.Commune;
-import javax.ejb.FinderException;
-import com.idega.core.contact.data.Phone;
-import is.idega.block.family.business.FamilyLogic;
-import com.idega.business.IBOService;
-import com.idega.user.business.UserBusiness;
-import com.idega.user.data.User;
 import java.rmi.RemoteException;
+import java.util.Collection;
+
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+
+import com.idega.business.IBOService;
+import com.idega.core.contact.data.Phone;
+import com.idega.core.location.data.Commune;
+import com.idega.presentation.IWContext;
+import com.idega.user.business.UserBusiness;
+import com.idega.user.data.Group;
+import com.idega.user.data.User;
+
+import is.idega.block.family.business.FamilyLogic;
 
 public interface CitizenBusiness extends IBOService, UserBusiness {
 
@@ -89,4 +93,7 @@ public interface CitizenBusiness extends IBOService, UserBusiness {
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getUsersCommuneURL
 	 */
 	public String getUsersCommuneURL(User user) throws RemoteException;
+
+	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie);
+
 }
