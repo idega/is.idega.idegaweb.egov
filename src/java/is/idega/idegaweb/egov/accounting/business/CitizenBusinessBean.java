@@ -404,7 +404,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 
 		try {
 			if (user == null) {
-				Name name = new Name(fullName);
+				Name name = new Name(fullName).capitalize();
 				user = userBusiness.createUser(name.getFirstName(), name.getMiddleName(), name.getLastName(), personalId);
 				CoreUtil.clearAllCaches();
 			}
@@ -495,7 +495,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 					return null;
 				}
 			} else {
-				getLogger().info("Failed to login via Island.is. Personal ID: " + personalID);
+				getLogger().info("Failed to login via authorization gateway. Personal ID: " + personalID);
 			}
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Error getting home page for citizen with personal ID: " + personalID, e);
@@ -552,7 +552,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 
 		boolean paramSet = false;
 		if (!StringUtil.isEmpty(uuid)) {
-			homePage = homePage.concat("?uuid=").concat(uuid);
+			homePage = homePage.concat(homePage.indexOf(CoreConstants.QMARK) == -1 ? CoreConstants.QMARK : CoreConstants.AMP).concat("uuid=").concat(uuid);
 			paramSet = true;
 		}
 		Cookie client = StringUtil.isEmpty(cookie) ? null : iwc.getCookie(cookie);
