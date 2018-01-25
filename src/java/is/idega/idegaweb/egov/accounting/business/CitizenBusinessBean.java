@@ -466,6 +466,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 			if (loginBusiness.logInByPersonalID(iwc, personalID)) {
 				HttpSession session = iwc.getSession();
 				session.setAttribute(LoginConstants.LOGIN_TYPE, LoginConstants.LoginType.ISLAND_DOT_IS.toString());
+				session.setAttribute(LoggedInUserCredentials.LOGIN_TYPE, LoginType.AUTHENTICATION_GATEWAY.toString());
 
 				String homePageForOAuth = getCustomHomePage(iwc, loginBusiness, session, appProperty, cookie);
 				if (!StringUtil.isEmpty(homePageForOAuth)) {
