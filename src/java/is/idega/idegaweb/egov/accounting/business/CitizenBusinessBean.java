@@ -208,6 +208,9 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 
 	@Override
 	public boolean haveSameAddress(User user, User compareUser) throws RemoteException {
+		if (user == null || compareUser == null) {
+			return false;
+		}
 		if (((Integer) user.getPrimaryKey()).intValue() == ((Integer) compareUser.getPrimaryKey()).intValue()) {
 			return true;
 		}
