@@ -94,6 +94,6 @@ public interface CitizenBusiness extends IBOService, UserBusiness {
 	 */
 	public String getUsersCommuneURL(User user) throws RemoteException;
 
-	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie);
+	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie, String loginType);
 
 }

@@ -419,7 +419,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	}
 
 	@Override
-	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie) {
+	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie, String loginType) {
 		if (StringUtil.isEmpty(personalID)) {
 			return null;
 		}
@@ -466,12 +466,15 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 				}
 			}
 
+			if (!StringUtil.isEmpty(loginType)) {
+				iwc.getRequest().setAttribute(LoginConstants.LOGIN_TYPE, loginType);
+			}
 			if (loginBusiness.logInByPersonalID(iwc, personalID)) {
 				HttpSession session = iwc.getSession();
-				session.setAttribute(LoginConstants.LOGIN_TYPE, LoginConstants.LoginType.ISLAND_DOT_IS.toString());
-				session.setAttribute(LoggedInUserCredentials.LOGIN_TYPE, LoginType.AUTHENTICATION_GATEWAY.toString());
+				session.setAttribute(LoginConstants.LOGIN_TYPE, StringUtil.isEmpty(loginType) ? LoginConstants.LoginType.ISLAND_DOT_IS.toString() : loginType);
+				session.setAttribute(LoggedInUserCredentials.LOGIN_TYPE, StringUtil.isEmpty(loginType) ? LoginType.AUTHENTICATION_GATEWAY.toString() : loginType);
 
-				String homePageForOAuth = getCustomHomePage(iwc, loginBusiness, session, appProperty, cookie);
+				String homePageForOAuth = getCustomHomePage(iwc, loginBusiness, session, appProperty, cookie, loginType);
 				if (!StringUtil.isEmpty(homePageForOAuth)) {
 					return homePageForOAuth;
 				}
@@ -499,6 +502,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 					return null;
 				}
 			} else {
+				iwc.getRequest().removeAttribute(LoginConstants.LOGIN_TYPE);
 				getLogger().info("Failed to login via authorization gateway. Personal ID: " + personalID);
 			}
 		} catch (Exception e) {
@@ -507,7 +511,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		return null;
 	}
 
-	private String getCustomHomePage(IWContext iwc, LoginBusinessBean loginBusiness, HttpSession session, String appProperty, String cookie) {
+	private String getCustomHomePage(IWContext iwc, LoginBusinessBean loginBusiness, HttpSession session, String appProperty, String cookie, String loginType) {
 		String homePage = StringUtil.isEmpty(appProperty) ? null : iwc.getApplicationSettings().getProperty(appProperty);
 		if (StringUtil.isEmpty(homePage)) {
 			return null;
@@ -542,7 +546,8 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 							username,
 							userLogin.getUserPassword(),
 							LoginType.AUTHENTICATION_GATEWAY,
-							userLogin.getId()
+							userLogin.getId(),
+							loginType
 					)
 			);
 		} catch (Exception e) {
