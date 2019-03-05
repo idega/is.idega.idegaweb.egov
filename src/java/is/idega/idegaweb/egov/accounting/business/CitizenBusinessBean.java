@@ -544,7 +544,6 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 							iwc.getRequest(),
 							RequestUtil.getServerURL(iwc.getRequest()),
 							username,
-							userLogin.getUserPassword(),
 							LoginType.AUTHENTICATION_GATEWAY,
 							userLogin.getId(),
 							loginType
