@@ -82,7 +82,7 @@ public interface CitizenBusiness extends IBOService, UserBusiness {
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#findUsersByConditions
 	 */
-	public Collection findUsersByConditions(String firstName, String middleName, String lastName, String pid) throws RemoteException;
+	public Collection<User> findUsersByConditions(String firstName, String middleName, String lastName, String pid) throws RemoteException;
 
 	/**
 	 * @see is.idega.idegaweb.egov.accounting.business.CitizenBusinessBean#getMemberFamilyLogic
