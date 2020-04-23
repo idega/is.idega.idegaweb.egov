@@ -20,7 +20,11 @@ import javax.ejb.FinderException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.idega.block.login.LoginConstants;
+import com.idega.block.user.bean.UserInfo;
+import com.idega.block.user.data.dao.UserCredentialsDAO;
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.business.IBORuntimeException;
@@ -77,6 +81,18 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 	private Group rootCitizenGroup;
 	private Group rootAcceptedCitizenGroup;
 	private Collection rootOtherCommuneCitizenGroup;
+
+	@Autowired(required = false)
+	private UserCredentialsDAO userCredentialsDAO;
+
+	private UserCredentialsDAO getUserCredentialsDAO() {
+		if (userCredentialsDAO == null) {
+			try {
+				ELUtil.getInstance().autowire(this);
+			} catch(Exception e) {}
+		}
+		return userCredentialsDAO;
+	}
 
 	private CommuneBusiness getCommuneBusiness() throws IBOLookupException {
 		return getServiceInstance(CommuneBusiness.class);
@@ -418,18 +434,25 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		return user;
 	}
 
+	private UserInfo getUserInfo(IWContext iwc, User user) {
+		UserCredentialsDAO userCredentialsDAO = getUserCredentialsDAO();
+		if (userCredentialsDAO == null) {
+			return null;
+		}
+
+		return userCredentialsDAO.getUserInfo(iwc, user);
+	}
+
 	@Override
 	public String getHomePageForCitizen(IWContext iwc, String personalID, String fullName, String appProperty, String cookie, String loginType) {
 		if (StringUtil.isEmpty(personalID)) {
 			return null;
 		}
 
-		if (!StringUtil.isEmpty(fullName)) {
-			User user = getUser(personalID, fullName);
-			if (user == null) {
-				getLogger().warning("Failed to create user with personal ID: " + personalID + ", name: " + fullName);
-				return null;
-			}
+		User user = getUser(personalID, StringUtil.isEmpty(fullName) ? personalID : fullName);
+		if (user == null) {
+			getLogger().warning("Failed to create user with personal ID: " + personalID + ", name: " + fullName);
+			return null;
 		}
 
 		LoginBusinessBean loginBusiness = LoginBusinessBean.getLoginBusinessBean(iwc.getRequest());
@@ -445,7 +468,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 
 			// check if user has login, otherwise create a login and put in default group
 			if (!loginBusiness.hasUserLogin(iwc.getRequest(), personalID)) {
-				User user = userBusiness.getUser(personalID);
+				user = userBusiness.getUser(personalID);
 				LoginTable loginTable = userBusiness.generateUserLogin(user);
 				LoginInfo loginInfo = LoginDBHandler.getLoginInfo(loginTable);
 				if (loginInfo != null) {
@@ -474,19 +497,33 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 				session.setAttribute(LoginConstants.LOGIN_TYPE, StringUtil.isEmpty(loginType) ? LoginConstants.LoginType.ISLAND_DOT_IS.toString() : loginType);
 				session.setAttribute(LoggedInUserCredentials.LOGIN_TYPE, StringUtil.isEmpty(loginType) ? LoginType.AUTHENTICATION_GATEWAY.toString() : loginType);
 
-				String homePageForOAuth = getCustomHomePage(iwc, loginBusiness, session, appProperty, cookie, loginType);
+				user = user == null ? userBusiness.getUser(personalID) : user;
+				UserInfo info = getUserInfo(iwc, user);
+
+				String homePageForOAuth = getCustomHomePage(
+						iwc,
+						loginBusiness,
+						session,
+						appProperty,
+						cookie,
+						loginType,
+						info == null ? null : info.getUuid(),
+						info == null ? null : info.getUsername(),
+						info == null ? null : info.getPassword(),
+						info == null ? null : info.getLoginId()
+				);
 				if (!StringUtil.isEmpty(homePageForOAuth)) {
 					return homePageForOAuth;
 				}
 
-				User user = loginBusiness.getCurrentUserLegacy(session);
+				User userLegacy = loginBusiness.getCurrentUserLegacy(session);
 
-				int redirectPageId = userBusiness.getHomePageIDForUser(user);
+				int redirectPageId = userBusiness.getHomePageIDForUser(userLegacy);
 
 				if (redirectPageId > 0) {
 					URIUtil util = new URIUtil(getBuilderService(iwac).getPageURI(redirectPageId));
 
-					Locale locale = userBusiness.getUsersPreferredLocale(user);
+					Locale locale = userBusiness.getUsersPreferredLocale(userLegacy);
 					if (locale == null) {
 						locale = iwac.getIWMainApplication().getDefaultLocale();
 					}
@@ -498,7 +535,7 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 					String responseUri = util.getUri();
 					return responseUri;
 				} else {
-					getLogger().warning(user + " (personal ID: " + personalID + ") does not have home page!");
+					getLogger().warning(userLegacy + " (personal ID: " + personalID + ") does not have home page!");
 					return null;
 				}
 			} else {
@@ -511,42 +548,56 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 		return null;
 	}
 
-	private String getCustomHomePage(IWContext iwc, LoginBusinessBean loginBusiness, HttpSession session, String appProperty, String cookie, String loginType) {
+	private String getCustomHomePage(
+			IWContext iwc,
+			LoginBusinessBean loginBusiness,
+			HttpSession session,
+			String appProperty,
+			String cookie,
+			String loginType,
+			String uuid,
+			String username,
+			String password,
+			Integer loginId
+	) {
 		String homePage = StringUtil.isEmpty(appProperty) ? null : iwc.getApplicationSettings().getProperty(appProperty);
 		if (StringUtil.isEmpty(homePage)) {
 			return null;
 		}
 
-		String uuid = null;
-		String username = null;
 		try {
-			LoggedOnInfo loggedOnInfo = loginBusiness.getLoggedOnInfo(session);
-			UserLogin userLogin = loggedOnInfo.getUserLogin();
+			if (StringUtil.isEmpty(uuid) || StringUtil.isEmpty(username) || StringUtil.isEmpty(password) || loginId == null) {
+				LoggedOnInfo loggedOnInfo = loginBusiness.getLoggedOnInfo(session);
+				UserLogin userLogin = loggedOnInfo.getUserLogin();
 
-			com.idega.user.data.bean.User user = userLogin.getUser();
-			if (user != null) {
-				uuid = user.getUniqueId();
-				if (StringUtil.isEmpty(uuid)) {
-					UUIDBusiness uuidBean;
-					try {
-						uuidBean = IBOLookup.getServiceInstance(iwc, UUIDBusiness.class);
-						uuidBean.addUniqueKeyIfNeeded(user, null);
-						uuid = user.getUniqueId();
-					} catch (Exception e) {
-						getLogger().log(Level.WARNING, "Error generationg UUID for " + user + " (ID: " + user.getId() + ")", e);
+				com.idega.user.data.bean.User user = userLogin.getUser();
+				if (user != null) {
+					uuid = user.getUniqueId();
+					if (StringUtil.isEmpty(uuid)) {
+						UUIDBusiness uuidBean;
+						try {
+							uuidBean = IBOLookup.getServiceInstance(iwc, UUIDBusiness.class);
+							uuidBean.addUniqueKeyIfNeeded(user, null);
+							uuid = user.getUniqueId();
+						} catch (Exception e) {
+							getLogger().log(Level.WARNING, "Error generationg UUID for " + user + " (ID: " + user.getId() + ")", e);
+						}
 					}
 				}
+
+				username = userLogin.getUserLogin();
+				password = userLogin.getUserPassword();
+				loginId = userLogin.getId();
 			}
 
-			username = userLogin.getUserLogin();
 			ELUtil.getInstance().publishEvent(
 					new LoggedInUserCredentials(
 							iwc.getRequest(),
 							RequestUtil.getServerURL(iwc.getRequest()),
 							username,
-							userLogin.getUserPassword(),
+							password,
 							LoginType.AUTHENTICATION_GATEWAY,
-							userLogin.getId(),
+							loginId,
 							loginType
 					)
 			);
