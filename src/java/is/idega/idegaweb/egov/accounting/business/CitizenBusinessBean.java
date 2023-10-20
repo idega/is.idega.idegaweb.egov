@@ -23,6 +23,8 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.idega.block.login.LoginConstants;
+import com.idega.block.login.data.PasswordTokenEntity;
+import com.idega.block.login.data.dao.PasswordTokenEntityDAO;
 import com.idega.block.user.bean.UserInfo;
 import com.idega.block.user.data.dao.UserCredentialsDAO;
 import com.idega.business.IBOLookup;
@@ -74,16 +76,29 @@ import is.idega.idegaweb.egov.EGOVConstants;
 
 public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusiness, UserBusiness {
 
+	private static final long serialVersionUID = 2293854441490460885L;
+
 	private final String ROOT_CITIZEN_GROUP_ID_PARAMETER_NAME = "commune_id";
 	private final String ROOT_ACCEPTED_CITIZEN_GROUP_ID_PARAMETER_NAME = "accepted_citizen_group_id";
 	private final String ROOT_OTHER_COMMUNE_CITIZEN_GROUP_ID_PARAMETER_NAME = "special_citizen_group_id";
 
 	private Group rootCitizenGroup;
 	private Group rootAcceptedCitizenGroup;
-	private Collection rootOtherCommuneCitizenGroup;
+	private Collection<?> rootOtherCommuneCitizenGroup;
 
 	@Autowired(required = false)
 	private UserCredentialsDAO userCredentialsDAO;
+
+	@Autowired
+	private PasswordTokenEntityDAO passwordTokenEntityDAO;
+
+	private PasswordTokenEntityDAO getPasswordTokenEntityDAO() {
+		if (this.passwordTokenEntityDAO == null) {
+			ELUtil.getInstance().autowire(this);
+		}
+
+		return this.passwordTokenEntityDAO;
+	}
 
 	private UserCredentialsDAO getUserCredentialsDAO() {
 		if (userCredentialsDAO == null) {
@@ -615,6 +630,16 @@ public class CitizenBusinessBean extends UserBusinessBean implements CitizenBusi
 			homePage = homePage.concat(homePage.indexOf(CoreConstants.QMARK) == -1 ? CoreConstants.QMARK : CoreConstants.AMP).concat("uuid=").concat(uuid);
 			paramSet = true;
 		}
+
+		int tokenValidFor = iwc.getApplicationSettings().getInt("login.token_valid_for", 1 * 60 * 1000);	//	1 minute by default
+		Long validUntil = Long.valueOf(tokenValidFor);
+		PasswordTokenEntity tokenEntity = getPasswordTokenEntityDAO().create(uuid, iwc.getRemoteIpAddress(), validUntil);
+		String token = tokenEntity == null ? null : tokenEntity.getToken();
+		if (!StringUtil.isEmpty(token)) {
+			homePage = homePage.concat(paramSet ? CoreConstants.AMP : CoreConstants.QOUTE_MARK).concat("token=").concat(token);
+			paramSet = true;
+		}
+
 		Cookie client = StringUtil.isEmpty(cookie) ? null : iwc.getCookie(cookie);
 		if (client != null && !StringUtil.isEmpty(client.getValue())) {
 			homePage = homePage.concat(paramSet ? CoreConstants.AMP : CoreConstants.QOUTE_MARK).concat("clientId=").concat(client.getValue());
